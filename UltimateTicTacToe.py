@@ -1,4 +1,5 @@
 import random
+import copy
 
 #**********Basic Functions**********#
 
@@ -104,58 +105,9 @@ def get_board_winner(board):
 
 
 def make_move(board, square_to_play, move, player):
-    new_board = list(board)
-    line, square = square_to_play
-
-    # makes a copy of the square line
-    new_sqline = board[line][square][move[1]].copy()
-
-    # makes a copy of the square, and substitutes the original square line for the copy
-    new_sq = board[line][square].copy()
-    new_sq[move[1]] = new_sqline
-
-    # makes a copy of the line, and substitutes the original square for the copy
-    new_line = board[line].copy()
-    new_line[square] = new_sq
-
-    # substitutes the original line for the copy
-    new_board[line] = new_line
-
-    new_board[line][square][move[1]][move[0]] = player
-
-    return tuple(new_board)
-
-
-def make_move2(board, square_to_play, move, player):
-    # iterates through the board and checks if it's at the list which will be altered, and then goes deeper into it to make a copy
-
-    new_board = []
-    for line in range(len(board)):
-        temp_line = []
-        if line != square_to_play[1]:
-            temp_line.extend(board[line])
-        else:
-
-            for square in range(len(board[line])):
-                temp_square = []
-                if square != square_to_play[0]:
-                    temp_square.extend(board[line][square])
-                else:
-
-                    for sq_line in range(len(board[line][square])):
-                        temp_sqline = []
-                        if sq_line != move[1]:
-                            temp_sqline.extend(board[line][square][sq_line])
-                        else:
-                            temp_sqline = [x for x in board[line][square][sq_line]]
-                            temp_sqline[move[0]] = player
-
-                        temp_square.append(temp_sqline)
-                
-                temp_line.append(temp_square)
-        
-        new_board.append(temp_line)
-
+    new_board = copy.deepcopy(board)
+    new_board[square_to_play[1]][square_to_play[0]][move[1]][move[0]] = player
+    
     return new_board
 
 
@@ -352,7 +304,7 @@ def game():
         
         move, square_to_play = minimax_ai(board=main_board, square_to_play=square_to_play, player=player)
 
-        main_board = make_move2(main_board, square_to_play, move, player)
+        main_board = make_move(main_board, square_to_play, move, player)
         turn += 1
         square_to_play = move
 
@@ -360,6 +312,3 @@ def game():
             square_to_play = None
 
 print(f'\nWinner: {game()}')
-#print_board(board=([[[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']], [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']], [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]], 
- #               [[[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']], [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']], [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]], 
-  #              [[[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']], [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']], [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]]), square_to_play=None, turn=0)
