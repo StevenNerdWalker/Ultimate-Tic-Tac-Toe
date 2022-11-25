@@ -126,6 +126,39 @@ def make_move(board, square_to_play, move, player):
     return tuple(new_board)
 
 
+def make_move2(board, square_to_play, move, player):
+    # iterates through the board and checks if it's at the list which will be altered, and then goes deeper into it to make a copy
+
+    new_board = []
+    for line in range(len(board)):
+        temp_line = []
+        if line != square_to_play[1]:
+            temp_line.extend(board[line])
+        else:
+
+            for square in range(len(board[line])):
+                temp_square = []
+                if square != square_to_play[0]:
+                    temp_square.extend(board[line][square])
+                else:
+
+                    for sq_line in range(len(board[line][square])):
+                        temp_sqline = []
+                        if sq_line != move[1]:
+                            temp_sqline.extend(board[line][square][sq_line])
+                        else:
+                            temp_sqline = [x for x in board[line][square][sq_line]]
+                            temp_sqline[move[0]] = player
+
+                        temp_square.append(temp_sqline)
+                
+                temp_line.append(temp_square)
+        
+        new_board.append(temp_line)
+
+    return new_board
+
+
 def move_isValid(board, square_to_play, move):
     square = board[square_to_play[1]][square_to_play[0]]
     if get_square_winner(square) is None:
@@ -317,9 +350,9 @@ def game():
         else:
             player = 'O'
         
-        move, square_to_play = random_ai(board=main_board, square_to_play=square_to_play, player=player)
+        move, square_to_play = minimax_ai(board=main_board, square_to_play=square_to_play, player=player)
 
-        main_board = make_move(main_board, square_to_play, move, player)
+        main_board = make_move2(main_board, square_to_play, move, player)
         turn += 1
         square_to_play = move
 
